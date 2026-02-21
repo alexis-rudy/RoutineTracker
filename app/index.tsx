@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <ScrollView>
       <View style={{
-        flexDirection: "row"
+        flexDirection: "row", justifyContent: "center", alignItems: "center", padding: 20
       }}>
         <Text style={{ fontSize: 35 }}>Hello, Alexis</Text>
       </View>
