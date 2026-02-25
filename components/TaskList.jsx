@@ -33,10 +33,9 @@ export default function TaskList() {
                 onComplete={() => {
                   // task.done = true;
                   setTasks((prevState) => {
-                    task.done = true;
-                    console.log(prevState.filter(task => task.done));
-                    return prevState.filter(item => !item.done);
-                  });
+                    // task.done = true;
+                    // console.log(prevState.filter(task => task.done));
+                    return prevState.filter((_, i) => i !== index);                  });
                 }}
               />)
             )}
