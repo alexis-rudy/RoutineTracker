@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ScrollView, Text, View, Button } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import Task from "./Task";
 
 export default function TaskList() {
@@ -10,39 +10,49 @@ export default function TaskList() {
   useEffect(() => {
     const data = require("../data/morning-tasks.json");
     setTasks(data);
-    // console.log(data);
   }, []);
 
   return (
     <>
       <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 25, fontWeight: "bold", marginBottom: 10 }}>
-          Current Tasks
-        </Text>
-        {/* <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "space-between",
-          }}></View> */}
-        <View style={{ marginTop: 20, flexDirection: "row", flexWrap: "wrap" }}>
-            {unfinishedTasks.map((task, index) => (
-              <Task
-                key={index}
-                task={task}
-                onComplete={() => {
-                  // task.done = true;
-                  setTasks((prevState) => {
-                    // task.done = true;
-                    // console.log(prevState.filter(task => task.done));
-                    return prevState.filter((_, i) => i !== index);                  });
-                }}
-              />)
-            )}
+        <Text style={styles.title}>Current Tasks</Text>
+        <View style={styles.container}>
+          {unfinishedTasks.map((task, index) => (
+            <Task
+              key={index}
+              task={task}
+              onComplete={() => {
+                setTasks((prevState) => {
+                  // Add the completed task to the completedTasks state
+                  setCompletedTasks((prevCompleted) => [...prevCompleted, task]);
+                  return prevState.filter((_, i) => i !== index);
+                });
+              }}
+            />
+          ))}
+        </View>
+        <View style={styles.container}>
+          <Pressable onPress={hideTasks}>
+            <Text style={styles.title}>Completed Tasks</Text>
+          </Pressable>
         </View>
       </View>
     </>
   );
-  
 }
 
+function hideTasks() {
+  return null;
+}
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 30,
+    color: "white",
+  },
+  container: {
+    marginTop: 20,
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+});
