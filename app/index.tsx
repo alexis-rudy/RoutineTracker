@@ -1,9 +1,9 @@
 import {
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
+    ImageBackground,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 import TaskList from "../components/TaskList";
 
@@ -81,5 +81,5 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(7, 16, 35, 0.76)",
     borderWidth: 1,
     borderColor: "rgba(164, 218, 255, 0.28)",
-  }
+  },
 });

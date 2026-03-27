@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Task from "./Task";
 
 export default function TaskList() {
@@ -38,7 +38,10 @@ export default function TaskList() {
               task={task}
               onComplete={() => {
                 setTasks((prevState) => {
-                  setCompletedTasks((prevCompleted) => [...prevCompleted, task]);
+                  setCompletedTasks((prevCompleted) => [
+                    ...prevCompleted,
+                    task,
+                  ]);
                   return prevState.filter((_, i) => i !== index);
                 });
               }}
@@ -54,7 +57,9 @@ export default function TaskList() {
         <Text style={styles.title}>Completed Tasks</Text>
         <View style={styles.container}>
           {completedTasks.length === 0 ? (
-            <Text style={styles.empty}>Complete a task to celebrate progress.</Text>
+            <Text style={styles.empty}>
+              Complete a task to celebrate progress.
+            </Text>
           ) : (
             completedTasks.map((task, index) => (
               <Task key={`completed-${index}`} task={task} completed />

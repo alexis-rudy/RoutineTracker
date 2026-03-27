@@ -1,4 +1,4 @@
-import { Pressable, Text, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, Text } from "react-native";
 
 export default function Task({ task, onComplete, completed = false }) {
   const label = typeof task === "string" ? task : task?.title;
