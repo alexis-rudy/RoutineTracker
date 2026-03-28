@@ -13,8 +13,6 @@ export default function TaskList() {
   }, []);
 
   const totalTasks = unfinishedTasks.length + completedTasks.length;
-  const progress = totalTasks === 0 ? 0 : completedTasks.length / totalTasks;
-  const progressWidth = `${Math.round(progress * 100)}%`;
 
   return (
     <View style={styles.root}>
@@ -23,10 +21,6 @@ export default function TaskList() {
         <Text style={styles.counter}>
           {completedTasks.length}/{totalTasks || 0} done
         </Text>
-      </View>
-
-      <View style={styles.progressTrack}>
-        <View style={[styles.progressFill, { width: progressWidth }]} />
       </View>
 
       <View style={styles.block}>
@@ -98,18 +92,6 @@ const styles = StyleSheet.create({
     color: "#C2D8F5",
     fontSize: 13,
     fontWeight: "600",
-  },
-  progressTrack: {
-    width: "100%",
-    height: 10,
-    borderRadius: 999,
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    borderRadius: 999,
-    backgroundColor: "#84FFDA",
   },
   block: {
     gap: 12,
