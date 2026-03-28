@@ -1,9 +1,24 @@
 import { Pressable, StyleSheet, Text } from "react-native";
+import { db } from "../data/firebase-config";
+import { collection, addDoc } from "firebase/firestore";
+
+const addTestData = async () => {
+  try {
+    await addDoc(collection(db, "test"), {
+      message: "Hellow from Expo",
+      createdAt: new Date(),
+    });
+    console.log("Data added!");
+  } catch (error) {
+    console.error("Error adding document: ", error);
+  }
+};
 
 export default function Task({ task, onComplete, completed = false }) {
   const label = typeof task === "string" ? task : task?.title;
 
   return (
+    <>
     <Pressable
       onPress={onComplete}
       disabled={completed}
@@ -16,6 +31,10 @@ export default function Task({ task, onComplete, completed = false }) {
         {label}
       </Text>
     </Pressable>
+    <Pressable onPress={addTestData} style={{ marginTop: 20 }}>
+      <Text style={{ color: "#007AFF" }}>Add Test Data to Firestore</Text>
+    </Pressable>
+    </>
   );
 }
 
