@@ -1,31 +1,42 @@
 import {
     ImageBackground,
+    Pressable,
     ScrollView,
     StyleSheet,
     Text,
     View,
 } from "react-native";
-import TaskList from "../components/TaskList";
+import { useRouter } from "expo-router";
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <ScrollView contentContainerStyle={styles.scrollContent}>
       <ImageBackground
         source={require("../assets/images/space_bg.jpeg")}
         resizeMode="cover"
         style={styles.background}>
-        <View style={styles.overlay}>
-          <View style={styles.hero}>
-            <Text style={styles.eyebrow}>Routine Tracker</Text>
-            <Text style={styles.title}>Hello, Alexis</Text>
-            <Text style={styles.subtitle}>
-              Build momentum with small wins and playful focus.
-            </Text>
-          </View>
+        <View style={styles.menuContainer}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.menuButton,
+              pressed && styles.menuButtonPressed,
+            ]}
+            onPress={() => router.push("/tabs")}>
+            <Text style={styles.menuButtonTitle}>Routine Tracker</Text>
+            <Text style={styles.menuButtonSubtitle}>Open daily task board</Text>
+          </Pressable>
 
-          <View style={styles.surface}>
-            <TaskList />
-          </View>
+          <Pressable
+            style={({ pressed }) => [
+              styles.menuButton,
+              pressed && styles.menuButtonPressed,
+            ]}
+            onPress={() => router.push("/tabs/calories")}>
+            <Text style={styles.menuButtonTitle}>Calorie Tracker</Text>
+            <Text style={styles.menuButtonSubtitle}>Log meals and totals</Text>
+          </Pressable>
         </View>
       </ImageBackground>
     </ScrollView>
@@ -39,6 +50,33 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     minHeight: "100%",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+  },
+  menuContainer: {
+    gap: 14,
+  },
+  menuButton: {
+    backgroundColor: "rgba(7, 16, 35, 0.84)",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(164, 218, 255, 0.34)",
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+  },
+  menuButtonPressed: {
+    transform: [{ scale: 0.98 }],
+    opacity: 0.9,
+  },
+  menuButtonTitle: {
+    color: "#FFFFFF",
+    fontSize: 20,
+    fontWeight: "800",
+  },
+  menuButtonSubtitle: {
+    color: "#B4D8FF",
+    fontSize: 13,
+    marginTop: 4,
   },
   overlay: {
     flex: 1,

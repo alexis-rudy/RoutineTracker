@@ -31,9 +31,6 @@ export default function Task({ task, onComplete, completed = false }) {
         {label}
       </Text>
     </Pressable>
-    <Pressable onPress={addTestData} style={{ marginTop: 20 }}>
-      <Text style={{ color: "#007AFF" }}>Add Test Data to Firestore</Text>
-    </Pressable>
     </>
   );
 }

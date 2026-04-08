@@ -1,18 +1,65 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { seedTaskCollections } from "../data/firebase-config";
+import {
+    listenToCompletedTasks,
+    listenToUnfinishedTasks,
+    updateTaskStatus,
+} from "../data/firebaseService";
 import Task from "./Task";
+
+const COLLECTION_NAME = "morning_tasks";
 
 export default function TaskList() {
   const [unfinishedTasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [seedMessage, setSeedMessage] = useState("");
 
-  // Load tasks when the component mounts
+  // Subscribe to Firestore tasks when the component mounts
   useEffect(() => {
-    const data = require("../data/morning-tasks.json");
-    setTasks(data);
+    // Subscribe to unfinished tasks
+    const unsubscribeUnfinished = listenToUnfinishedTasks(
+      COLLECTION_NAME,
+      setTasks,
+    );
+
+    // Subscribe to completed tasks
+    const unsubscribeCompleted = listenToCompletedTasks(
+      COLLECTION_NAME,
+      setCompletedTasks,
+    );
+
+    // Cleanup subscriptions on unmount
+    return () => {
+      unsubscribeUnfinished();
+      unsubscribeCompleted();
+    };
   }, []);
 
   const totalTasks = unfinishedTasks.length + completedTasks.length;
+
+  async function handleSeedPress() {
+    if (isSeeding) {
+      return;
+    }
+
+    setIsSeeding(true);
+    setSeedMessage("");
+
+    try {
+      const results = await seedTaskCollections();
+      const totalSeeded = Object.values(results).reduce(
+        (sum, count) => sum + Number(count || 0),
+        0,
+      );
+      setSeedMessage(`Seeded ${totalSeeded} records to Firestore.`);
+    } catch (error) {
+      setSeedMessage("Seeding failed. Check console/Firebase permissions.");
+    } finally {
+      setIsSeeding(false);
+    }
+  }
 
   return (
     <View style={styles.root}>
@@ -23,21 +70,33 @@ export default function TaskList() {
         </Text>
       </View>
 
+      <View style={styles.seedArea}>
+        <Pressable
+          onPress={handleSeedPress}
+          disabled={isSeeding}
+          style={({ pressed }) => [
+            styles.seedButton,
+            pressed ? styles.seedButtonPressed : null,
+            isSeeding ? styles.seedButtonDisabled : null,
+          ]}>
+          <Text style={styles.seedButtonText}>
+            {isSeeding ? "Seeding..." : "Seed Firebase"}
+          </Text>
+        </Pressable>
+        {seedMessage ? (
+          <Text style={styles.seedMessage}>{seedMessage}</Text>
+        ) : null}
+      </View>
+
       <View style={styles.block}>
         <Text style={styles.title}>Current Tasks</Text>
         <View style={styles.container}>
-          {unfinishedTasks.map((task, index) => (
+          {unfinishedTasks.map((task) => (
             <Task
-              key={index}
+              key={task.id}
               task={task}
               onComplete={() => {
-                setTasks((prevState) => {
-                  setCompletedTasks((prevCompleted) => [
-                    ...prevCompleted,
-                    task,
-                  ]);
-                  return prevState.filter((_, i) => i !== index);
-                });
+                updateTaskStatus(COLLECTION_NAME, task.id, true);
               }}
             />
           ))}
@@ -55,8 +114,8 @@ export default function TaskList() {
               Complete a task to celebrate progress.
             </Text>
           ) : (
-            completedTasks.map((task, index) => (
-              <Task key={`completed-${index}`} task={task} completed />
+            completedTasks.map((task) => (
+              <Task key={task.id} task={task} completed />
             ))
           )}
         </View>
@@ -95,6 +154,33 @@ const styles = StyleSheet.create({
   },
   block: {
     gap: 12,
+  },
+  seedArea: {
+    gap: 8,
+    alignItems: "flex-start",
+  },
+  seedButton: {
+    backgroundColor: "#84FFDA",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#60D8B5",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  seedButtonPressed: {
+    transform: [{ scale: 0.98 }],
+  },
+  seedButtonDisabled: {
+    opacity: 0.72,
+  },
+  seedButtonText: {
+    color: "#0C2B32",
+    fontWeight: "700",
+    fontSize: 14,
+  },
+  seedMessage: {
+    color: "#D2DDF0",
+    fontSize: 13,
   },
   title: {
     fontSize: 24,

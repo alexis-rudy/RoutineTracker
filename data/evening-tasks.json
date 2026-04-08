@@ -1,0 +1,26 @@
+[
+    {
+        "title": "Skincare routine",
+        "done": "false" 
+    },
+    {
+        "title": "Brush teeth",
+        "done": "false"
+    },
+    {
+        "title": "Eat dinner",
+        "done": "false"
+    },
+    {
+        "title": "Prepare clothes for tomorrow",
+        "done": "false"
+    },
+    { 
+        "title": "Shower",
+        "done": "false"
+    },
+    {
+        "title": "Take meds",
+        "done": "false"
+    }
+]
