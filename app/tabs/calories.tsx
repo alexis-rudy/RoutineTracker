@@ -14,6 +14,8 @@ type CalorieEntry = {
 
 export default function Calories() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [prefilledMealName, setPrefilledMealName] = useState("");
+  const [prefilledCalorieAmount, setPrefilledCalorieAmount] = useState("");
   const [entries, setEntries] = useState<CalorieEntry[]>([]);
 
   const calorieGoal = 2000;
@@ -35,6 +37,17 @@ export default function Calories() {
     } catch (error) {
       console.error("Failed to delete calorie entry:", error);
     }
+  }
+  function handleOpenAddModal() {
+    setPrefilledMealName("");
+    setPrefilledCalorieAmount("");
+    setModalVisible(true);
+  }
+
+  function handleOpenEditModal(entry: CalorieEntry) {
+    setPrefilledMealName(entry.mealName || "");
+    setPrefilledCalorieAmount(String(entry.calories ?? ""));
+    setModalVisible(true);
   }
 
   return (
@@ -68,7 +81,7 @@ export default function Calories() {
             styles.addButton,
             pressed && styles.addButtonPressed,
           ]}
-          onPress={() => setModalVisible(true)}>
+          onPress={handleOpenAddModal}>
           <Text style={styles.addButtonText}>+ Add Meal</Text>
         </Pressable>
 
@@ -91,6 +104,14 @@ export default function Calories() {
                       styles.deleteButton,
                       pressed && styles.deleteButtonPressed,
                     ]}
+                    onPress={() => handleOpenEditModal(entry)}>
+                    <Text style={styles.deleteButtonText}>E</Text>
+                  </Pressable>
+                  <Pressable
+                    style={({ pressed }) => [
+                      styles.deleteButton,
+                      pressed && styles.deleteButtonPressed,
+                    ]}
                     onPress={() => handleDeleteEntry(entry.id)}>
                     <Text style={styles.deleteButtonText}>-</Text>
                   </Pressable>
@@ -104,6 +125,8 @@ export default function Calories() {
       <CalorieModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+        initialMealName={prefilledMealName}
+        initialCalorieAmount={prefilledCalorieAmount}
       />
     </>
   );

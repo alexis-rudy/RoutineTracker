@@ -34,6 +34,8 @@ export default app;
 
 export const db = getFirestore(app);
 
+console.log(`Firebase initialized for project: ${firebaseConfig.projectId}`);
+
 function normalizeTaskItem(item) {
   if (typeof item === "string") {
     return { title: item, done: false };

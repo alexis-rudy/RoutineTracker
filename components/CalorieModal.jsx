@@ -15,7 +15,12 @@ import {
   deleteCalorieEntry,
 } from "../data/firebaseService";
 
-export default function CalorieModal({ visible, onClose }) {
+export default function CalorieModal({
+  visible,
+  onClose,
+  initialMealName = "",
+  initialCalorieAmount = "",
+}) {
   const [mealName, setMealName] = useState("");
   const [calorieAmount, setCalorieAmount] = useState("");
   const [entries, setEntries] = useState([]);
@@ -35,6 +40,16 @@ export default function CalorieModal({ visible, onClose }) {
     const unsubscribe = listenToCalorieEntries(setEntries);
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!visible) {
+      return;
+    }
+
+    setMealName(initialMealName || "");
+    setCalorieAmount(initialCalorieAmount || "");
+    setError("");
+  }, [visible, initialMealName, initialCalorieAmount]);
 
   async function handleAddMeal() {
     // Validation
